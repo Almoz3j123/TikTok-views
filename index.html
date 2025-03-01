@@ -3,44 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رشق مشاهدات تيك توك</title>
+    <title>خدمات المزعج لرشق مشاهدات تيك توك مجاني 💚</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        iframe { width: 100%; height: 500px; border: 1px solid #ccc; }
-        input, button { margin: 10px; padding: 10px; font-size: 18px; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #0f0f0f;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        input {
+            background: #2e2e2e;
+            color: white;
+            text-align: center;
+        }
+        button {
+            background: #ff0055;
+            color: white;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+        .countdown {
+            font-size: 20px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <h2>🎥 أدخل رابط فيديو تيك توك:</h2>
-    <input type="text" id="video_url" placeholder="ضع رابط الفيديو هنا">
-    <button onclick="sendViews()">إرسال المشاهدات 🚀</button>
-
-    <h3>⚡ حل الكابتشا هنا:</h3>
-    <iframe src="https://zefoy.com" allowfullscreen></iframe>
-
-    <p id="status"></p>
+    <div class="container">
+        <h2>🎯 رشق مشاهدات تيك توك 🎯</h2>
+        <input type="text" id="videoUrl" placeholder="ضع رابط فيديو تيك توك هنا">
+        <br>
+        <button id="sendBtn" onclick="sendViews()">إرسال المشاهدات</button>
+        <p class="countdown" id="timerText">⏳ انتظر قليلاً...</p>
+    </div>
 
     <script>
+        let countdownTime = 60; // وقت العد التنازلي (ثانية)
+        let timerRunning = false;
+
+        function startTimer() {
+            if (timerRunning) return;
+            timerRunning = true;
+            document.getElementById("sendBtn").disabled = true;
+
+            let interval = setInterval(() => {
+                if (countdownTime > 0) {
+                    document.getElementById("timerText").innerText = `⏳ انتظر ${countdownTime} ثانية...`;
+                    countdownTime--;
+                } else {
+                    clearInterval(interval);
+                    document.getElementById("sendBtn").disabled = false;
+                    document.getElementById("timerText").innerText = "✅ يمكنك إرسال طلب جديد!";
+                    countdownTime = 60; // إعادة ضبط الوقت
+                    timerRunning = false;
+                }
+            }, 1000);
+        }
+
         function sendViews() {
-            let videoUrl = document.getElementById("video_url").value;
-            if (videoUrl === "") {
-                alert("❌ الرجاء إدخال رابط الفيديو!");
+            let videoUrl = document.getElementById("videoUrl").value;
+
+            if (!videoUrl.includes("tiktok.com")) {
+                alert("❌ أدخل رابط فيديو تيك توك صحيح!");
                 return;
             }
 
-            let formData = new FormData();
-            formData.append("video_url", videoUrl);
-
             fetch("server.php", {
                 method: "POST",
-                body: formData
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `video_url=${videoUrl}`
             })
             .then(response => response.text())
-            .then(data => document.getElementById("status").innerHTML = data)
-            .catch(error => console.error("خطأ:", error));
+            .then(data => {
+                alert("✅ تم إرسال المشاهدات بنجاح!");
+                startTimer(); // تشغيل العداد بعد الإرسال
+            })
+            .catch(error => {
+                alert("❌ حدث خطأ أثناء الإرسال!");
+                console.error(error);
+            });
         }
     </script>
 
 </body>
-</html>
+            </html>
